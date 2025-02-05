@@ -55,5 +55,26 @@ for i, img in enumerate(imgs[:10]):
 plt.show()
 
 def add_noise(x_0, t, betas):
+    T = len(betas)
+    assert t >= 1 and t <= T
+
+    alphas = 1 - betas
+    alphas_bars = torch.cumprod(alphas, dim=0)
+    t_idx = t - 1
+    alpha_bar_t = alphas_bars[t_idx]
+
+    eps = torch.randn_like(x_0)
+    x_t = torch.sqrt(alpha_bar_t) * x_0 + torch.sqrt(1 - alpha_bar_t) * eps
+
+    return x_t
+
+t = 100
+x_t = add_noise(x, t, betas)
+
+img = reverse_to_img(x_t)
+plt.imshow(img)
+plt.title(f'Noise: {t}')
+plt.axis('off')
+plt.show()
 
 
